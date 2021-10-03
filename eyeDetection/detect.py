@@ -4,6 +4,7 @@ from . import face_utils as utils
 import numpy as np
 import dlib
 import cv2
+import time
 import os
 from collections import namedtuple
 
@@ -85,20 +86,53 @@ class FaceDetector(object):
         box = self.sizeKeeper.keep(box)
         return box
     
-    
 class EyeDetector(object):
-    PREDICTOR_FILE = os.path.join(cwd, 'eyeDetection', 'detection-model', 'shape_predictor_68_face_landmarks_GTX.dat')
-    PREDICTOR = dlib.shape_predictor(PREDICTOR_FILE)
+    # PREDICTOR_FILE = os.path.join(cwd, 'eyeDetection', 'detection-model', 'shape_predictor_68_face_landmarks_GTX.dat')
+    # PREDICTOR = dlib.shape_predictor(PREDICTOR_FILE)
+    def __init__(self) -> None:
+        super().__init__()
     
+    
+class EyeDetectorHaarCascades(object):
+    __path = os.path.join(cwd, 'eyeDetection', 'detection-model', 'eye_haarcascades.xml')
+    DETECTOR = cv2.CascadeClassifier(__path)
     def __init__(self) -> None:
         super().__init__()
         
+    def __eye_pick(self, eyeRects, face_roi_br) -> int:
+        idx = 0
+        if len(eyeRects) == 1:
+            return idx
+        face_center = (face_roi_br[0]/2.0, face_roi_br[1]/2.0)
+        minDst = max(face_roi_br)
+        for idx, (ex, ey, ew, eh) in enumerate(eyeRects):
+            eye_center = (ex + ew/2.0, ey + eh/2.0)
+            dist = utils.dists(eye_center, face_center)
+            if dist < minDst:
+                minDst = dist
+                pick = idx
+        return idx
+        
+    def detect(self, img, tl, br) -> DetectBox:
+        tlx, tly = tl
+        brx, bry = br
+        faceROI = img[tly:bry, tlx:brx]
+        
+        eyeRects = EyeDetector.DETECTOR.detectMultiScale(
+			faceROI, scaleFactor=1.12, minNeighbors=12, minSize=(30, 20), flags=cv2.CASCADE_SCALE_IMAGE)
+        
+        if len(eyeRects) == 0:
+            return DetectBox(0,0,0,0)
+        pick = self.__eye_pick(eyeRects, faceROI.shape[:2][::-1])
+        ex, ey, ew, eh = eyeRects[pick]
+        return DetectBox(ex+tlx, ey+tly, ex+ew+tlx, ey+eh+tly)
 
 class Detector(object):
     FACE_DETECTOR = FaceDetector()
+    EYE_DETECTOR = EyeDetector()
     def __init__(self, path) -> None:
         super().__init__()
-    
+        
     @classmethod
     def start(cls, path):
         cap = cv2.VideoCapture(path)
@@ -108,9 +142,13 @@ class Detector(object):
         while(cap.isOpened()):
             ret, frame = cap.read()
             if ret == True:
+                start = time.time()
                 main_detected_box = cls.FACE_DETECTOR.detect(frame)
                 tl, br = main_detected_box.getBox()
+                end = time.time()
+
                 detected_img = cv2.rectangle(frame, tl, br, (0,222,0), 2)
+                print(f'FPS: {1/(end-start)}')
                 
                 cv2.imshow('Frame',detected_img)
                 if cv2.waitKey(25) & 0xFF == ord('q'): # Press Q on keyboard to  exit

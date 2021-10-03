@@ -1,4 +1,5 @@
 import numpy as np
+import math
 
 def rect_to_bb(rect):
 	# take a bounding predicted by dlib and convert it
@@ -20,3 +21,8 @@ def shape_to_np(shape, dtype="int"):
 		coords[i] = (shape.part(i).x, shape.part(i).y)
 	# return the list of (x, y)-coordinates
 	return coords
+
+def dists(p1, p2) -> float:
+    a = (p1[0] - p2[0])**2
+    b = (p1[1] - p2[1])**2
+    return math.sqrt(a+b)
