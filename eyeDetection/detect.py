@@ -1,57 +1,11 @@
-from numpy.lib.function_base import average
-from . import face_utils as utils
-# from imutils import face_utils
+from eyeDetection import *
 import numpy as np
 import dlib
 import cv2
 import time
 import os
-from collections import namedtuple
 
 cwd = os.getcwd()
-
-_BoxLoc = namedtuple("BoxLoc", ['x1', 'y1', 'x2', 'y2'])
-
-class DetectBox(object):
-    def __init__(self, x1, y1, x2, y2) -> None:
-        super().__init__()
-        self._box_locations = _BoxLoc(x1, y1, x2, y2)
-
-    def area(self) -> int:
-        ydiff = self._box_locations.y2 - self._box_locations.y1
-        xdiff = self._box_locations.x2 - self._box_locations.x1
-        return xdiff * ydiff
-    
-    def getBox(self):
-        x1, y1 = self._box_locations.x1, self._box_locations.y1
-        x2, y2 = self._box_locations.x2, self._box_locations.y2
-        return (x1, y1), (x2, y2)
-    
-    
-class StableKeeper(object):
-    """
-        To maintain the size of detected faces, keep it from large variation
-    """
-    THRESH = 0.8
-    N_KEEP = 3
-    def __init__(self) -> None:
-        super().__init__()
-        self.ls = []
-        
-    def keep(self, detect_box: DetectBox) -> DetectBox:
-        if len(self.ls) < StableKeeper.N_KEEP:
-            self.ls.append(detect_box)
-        else:
-            avg = average([i.area() for i in self.ls])
-            area = detect_box.area()
-            variation = abs(area - avg) / max(area, avg)
-            if variation > StableKeeper.THRESH: ## unstable
-                return self.ls[-1]
-            else:
-                self.ls.pop(0)
-                self.ls.append(detect_box)
-        return detect_box         
-
 
 class FaceDetector(object):
     MODEL_FILE = os.path.join(cwd, 'eyeDetection', 'detection-model', 'opencv_face_detector_uint8.pb')
@@ -91,41 +45,7 @@ class EyeDetector(object):
     # PREDICTOR = dlib.shape_predictor(PREDICTOR_FILE)
     def __init__(self) -> None:
         super().__init__()
-    
-    
-class EyeDetectorHaarCascades(object):
-    __path = os.path.join(cwd, 'eyeDetection', 'detection-model', 'eye_haarcascades.xml')
-    DETECTOR = cv2.CascadeClassifier(__path)
-    def __init__(self) -> None:
-        super().__init__()
-        
-    def __eye_pick(self, eyeRects, face_roi_br) -> int:
-        idx = 0
-        if len(eyeRects) == 1:
-            return idx
-        face_center = (face_roi_br[0]/2.0, face_roi_br[1]/2.0)
-        minDst = max(face_roi_br)
-        for idx, (ex, ey, ew, eh) in enumerate(eyeRects):
-            eye_center = (ex + ew/2.0, ey + eh/2.0)
-            dist = utils.dists(eye_center, face_center)
-            if dist < minDst:
-                minDst = dist
-                pick = idx
-        return idx
-        
-    def detect(self, img, tl, br) -> DetectBox:
-        tlx, tly = tl
-        brx, bry = br
-        faceROI = img[tly:bry, tlx:brx]
-        
-        eyeRects = EyeDetector.DETECTOR.detectMultiScale(
-			faceROI, scaleFactor=1.12, minNeighbors=12, minSize=(30, 20), flags=cv2.CASCADE_SCALE_IMAGE)
-        
-        if len(eyeRects) == 0:
-            return DetectBox(0,0,0,0)
-        pick = self.__eye_pick(eyeRects, faceROI.shape[:2][::-1])
-        ex, ey, ew, eh = eyeRects[pick]
-        return DetectBox(ex+tlx, ey+tly, ex+ew+tlx, ey+eh+tly)
+
 
 class Detector(object):
     FACE_DETECTOR = FaceDetector()
