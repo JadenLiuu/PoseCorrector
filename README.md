@@ -1,8 +1,13 @@
 # PoseCorrector
 
 ## Preparation 
-`>> bzip2 -d ./detection-model/shape_predictor_68_face_landmarks_GTX.dat.bz2`
+1. unzip model \
+    `>> bzip2 -d ./detection-model/shape_predictor_68_face_landmarks_GTX.dat.bz2`
+2. install docker & nvidia-docker2
+
 
 ## Docker
->> docker build -f ./Dockerfile -t nvcr.io:gunDev .
->> docker run --rm --gpus all -v `pwd`:/work/ -i -t nvcr.io/nvidia/pytorch:21.09-py3 bash
+```bash
+>> docker build -f ./Dockerfile -t nvcr.io/pytorch/gunDev .
+>> docker run --rm --gpus all -v `pwd`:/work/ -i -t nvcr.io/pytorch/gundev:latest bash
+```
