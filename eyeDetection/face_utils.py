@@ -1,6 +1,9 @@
 import numpy as np
 import math
 
+def midpoint(p1 ,p2):
+    return int((p1.x + p2.x)/2), int((p1.y + p2.y)/2)
+
 def rect_to_bb(rect):
 	# take a bounding predicted by dlib and convert it
 	# to the format (x, y, w, h) as we would normally do
