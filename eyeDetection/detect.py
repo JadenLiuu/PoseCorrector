@@ -38,7 +38,7 @@ class Detector(object):
                 detected_img = cv2.rectangle(detected_img, etl, ebr, (225,100,10), 2)
                 
                 ## cv2.imshow('Frame',detected_img)
-                # cv2.imwrite(f'tmp/{ii}.jpg', detected_img)
+                cv2.imwrite(f'tmp/{ii}.jpg', detected_img)
                 ii = ii + 1
                 if cv2.waitKey(25) & 0xFF == ord('q'): # Press Q on keyboard to  exit
                     break

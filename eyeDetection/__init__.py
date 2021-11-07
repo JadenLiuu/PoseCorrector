@@ -7,16 +7,25 @@ _BoxLoc = namedtuple("BoxLoc", ['x1', 'y1', 'x2', 'y2'])
 class DetectBox(object):
     def __init__(self, x1, y1, x2, y2) -> None:
         super().__init__()
-        self._box_locations = _BoxLoc(x1, y1, x2, y2)
+        self._boxLoc = _BoxLoc(x1, y1, x2, y2)
 
     def area(self) -> int:
-        ydiff = self._box_locations.y2 - self._box_locations.y1
-        xdiff = self._box_locations.x2 - self._box_locations.x1
+        ydiff = self._boxLoc.y2 - self._boxLoc.y1
+        xdiff = self._boxLoc.x2 - self._boxLoc.x1
         return xdiff * ydiff
-    
+
+    def zoomIn(self, ratiox, ratioy) -> None:
+        w = self._boxLoc.x2 - self._boxLoc.x1
+        h = self._boxLoc.y2 - self._boxLoc.y1
+        x1 = int(self._boxLoc.x1 + w * (1.0-ratiox/2.0))
+        x2 = int(self._boxLoc.x2 - w * (1.0-ratiox/2.0))
+        y1 = int(self._boxLoc.y1 + h * (1.0-ratioy/2.0))
+        y2 = int(self._boxLoc.y2 - h * (1.0-ratioy/2.0))
+        self._boxLoc = _BoxLoc(x1, y1, x2, y2)
+
     def getBox(self):
-        x1, y1 = self._box_locations.x1, self._box_locations.y1
-        x2, y2 = self._box_locations.x2, self._box_locations.y2
+        x1, y1 = self._boxLoc.x1, self._boxLoc.y1
+        x2, y2 = self._boxLoc.x2, self._boxLoc.y2
         return (x1, y1), (x2, y2)
     
     
