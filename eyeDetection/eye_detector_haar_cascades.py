@@ -32,8 +32,8 @@ class EyeDetectorHaarCascades(object):
         faceROI = img[tly:bry, tlx:brx]
         
         eyeRects = EyeDetectorHaarCascades.DETECTOR.detectMultiScale(
-			faceROI, scaleFactor=1.12, minNeighbors=12, minSize=(30, 20), flags=cv2.CASCADE_SCALE_IMAGE)
-        
+			faceROI, scaleFactor=1.11, minNeighbors=5, minSize=(20, 10), flags=cv2.CASCADE_SCALE_IMAGE)
+
         if len(eyeRects) == 0:
             return DetectBox(0,0,0,0)
         pick = self.__eye_pick(eyeRects, faceROI.shape[:2][::-1])

@@ -28,10 +28,10 @@ class Detector(object):
                 start = time.time()
                 main_detected_box = cls.FACE_DETECTOR.detect(frame)
                 tl, br = main_detected_box.getBox()
-                end = time.time()
 
                 eye = cls.EYE_DETECTOR.detect(frame, tl, br)
                 etl, ebr = eye.getBox()
+                end = time.time()
 
                 detected_img = cv2.rectangle(frame, tl, br, (0,222,0), 2)
                 print(f'FPS: {1/(end-start)}')
