@@ -28,17 +28,17 @@ class Detector(object):
                 start = time.time()
                 main_detected_box = cls.FACE_DETECTOR.detect(frame)
                 tl, br = main_detected_box.getBox()
-                end = time.time()
 
                 eye = cls.EYE_DETECTOR.detect(frame, tl, br)
                 etl, ebr = eye.getBox()
+                end = time.time()
 
                 detected_img = cv2.rectangle(frame, tl, br, (0,222,0), 2)
                 print(f'FPS: {1/(end-start)}')
                 detected_img = cv2.rectangle(detected_img, etl, ebr, (225,100,10), 2)
                 
                 ## cv2.imshow('Frame',detected_img)
-                cv2.imwrite(f'tmp/{ii}.jpg', detected_img)
+                # cv2.imwrite(f'tmp/{ii}.jpg', detected_img)
                 ii = ii + 1
                 if cv2.waitKey(25) & 0xFF == ord('q'): # Press Q on keyboard to  exit
                     break

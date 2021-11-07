@@ -11,6 +11,7 @@ LEFT_KEY = "left"
 RIGHT_KEY = "right"
 
 class EyeDetector(object):
+    ii = 0
     PREDICTOR = None
     MODEL_FILE ='shape_predictor_68_face_landmarks_GTX.dat'
     EYE_LANDMARK_KEYS = {
@@ -42,10 +43,18 @@ class EyeDetector(object):
         maxY = max(max(leftPt.y, rightPt.y), centerBottom_y)
         return DetectBox(minX, minY, maxX, maxY)
 
+    def drawLandMarks(self, landmark, frame):
+        for key in [LEFT_KEY, RIGHT_KEY]:
+            for partKey in EyeDetector.EYE_LANDMARK_KEYS[key]:
+                center = landmark.part(partKey)
+                frame = cv2.circle(frame, (center.x, center.y), 2, (0, 255, 255), -1)
+        cv2.imwrite(f'tmp/{EyeDetector.ii}.jpg', frame)
+        EyeDetector.ii+=1
+
     def detect(self, img, tl, br) -> DetectBox:
         faceDlibRect = dlib.rectangle(tl[0], tl[1], br[0], br[1])
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        landmarks = EyeDetector.PREDICTOR(img, faceDlibRect)
+        imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        landmarks = EyeDetector.PREDICTOR(imgGray, faceDlibRect)
         bl = self.getEyeBox(landmarks, LEFT_KEY)
         br = self.getEyeBox(landmarks, RIGHT_KEY)
         return bl if bl.area() > br.area() else br
