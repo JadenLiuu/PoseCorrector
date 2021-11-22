@@ -29,6 +29,7 @@ class FaceDetector(object):
         blob = cv2.dnn.blobFromImage(img, 1.0, (300, 300), [104, 117, 123], False, False)
         FaceDetector.NET.setInput(blob)
         detections = FaceDetector.NET.forward()
+        
         pick = self.__face_pick(detections)
         x1 = int(detections[0, 0, pick, 3] * w)
         y1 = int(detections[0, 0, pick, 4] * h)

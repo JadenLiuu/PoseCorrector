@@ -1,5 +1,6 @@
 import torch.nn as nn
-from model import ResidualBlock
+# from model import ResidualBlock
+from eyeDetection.validate.model import ResidualBlock
 
 class Model(nn.Module):
 

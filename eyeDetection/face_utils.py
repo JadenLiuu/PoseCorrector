@@ -1,5 +1,6 @@
 import numpy as np
 import math
+import cv2
 
 def midpoint(p1 ,p2):
     return int((p1.x + p2.x)/2), int((p1.y + p2.y)/2)
@@ -29,3 +30,9 @@ def dists(p1, p2) -> float:
     a = (p1[0] - p2[0])**2
     b = (p1[1] - p2[1])**2
     return math.sqrt(a+b)
+
+def resizeImg(img, scale_percent):
+	width = int(img.shape[1] * scale_percent / 100)
+	height = int(img.shape[0] * scale_percent / 100)
+	dim = (width, height)
+	return cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
