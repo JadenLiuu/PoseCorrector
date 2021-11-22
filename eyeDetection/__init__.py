@@ -27,6 +27,17 @@ class DetectBox(object):
         x1, y1 = self._boxLoc.x1, self._boxLoc.y1
         x2, y2 = self._boxLoc.x2, self._boxLoc.y2
         return (x1, y1), (x2, y2)
+
+    def shrinkBack(self, ratio):
+        x1 = int(self._boxLoc.x1 / ratio)
+        x2 = int(self._boxLoc.x2 / ratio)
+        y1 = int(self._boxLoc.y1 / ratio)
+        y2 = int(self._boxLoc.y2 / ratio)
+        self._boxLoc = _BoxLoc(x1, y1, x2, y2)
+
+    def isEmpty(self) -> bool:
+        return self._boxLoc.x1 == 0 and self._boxLoc.x2 == 0 \
+            and self._boxLoc.y1 == 0 and self._boxLoc.y2 == 0
     
     
 class StableKeeper(object):
@@ -34,7 +45,7 @@ class StableKeeper(object):
         To maintain the size of detected faces, keep it from large variation
     """
     THRESH = 0.8
-    N_KEEP = 3
+    N_KEEP = 5
     def __init__(self) -> None:
         super().__init__()
         self.ls = []

@@ -32,7 +32,12 @@ def dists(p1, p2) -> float:
     return math.sqrt(a+b)
 
 def resizeImg(img, scale_percent):
-	width = int(img.shape[1] * scale_percent / 100)
-	height = int(img.shape[0] * scale_percent / 100)
-	dim = (width, height)
-	return cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
+    if scale_percent < 0:
+        return img
+    if isinstance(scale_percent, float):
+        scale_percent *= 100
+
+    width = int(img.shape[1] * scale_percent / 100)
+    height = int(img.shape[0] * scale_percent / 100)
+    dim = (width, height)
+    return cv2.resize(img, dim, interpolation = cv2.INTER_AREA)

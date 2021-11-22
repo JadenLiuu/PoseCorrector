@@ -7,7 +7,7 @@ from eyeDetection.face_utils import resizeImg
 from eyeDetection.face_detect import FaceDetector
 from eyeDetection.validate.validate import Validation 
 # from eyeDetection.eye_detect_dlib_68 import EyeDetector
-# from eyeDetection.eye_detector_haar_cascades import EyeDetectorHaarCascades
+from eyeDetection.eye_detector_haar_cascades import EyeDetectorHaarCascades
 X1Ratio="X1Ratio"
 X2Ratio="X2Ratio"
 Y1Ratio="Y1Ratio"
@@ -20,7 +20,7 @@ eyeClosedModelPath = os.path.join(os.getcwd(), "eyeDetection/validate/modelEye.t
 class Detector(object):
     FACE_DETECTOR = FaceDetector()
     # EYE_DETECTOR = EyeDetector()
-    # EYE_DETECTOR = EyeDetectorHaarCascades()
+    EYE_DETECTOR = EyeDetectorHaarCascades()
     Ratios = {}
     EYECLOSED_VALIDATOR = Validation(eyeClosedModelPath)
     eyeKeeper = StableKeeper()
@@ -43,21 +43,31 @@ class Detector(object):
         x2 = int(cx + w * Detector.Ratios[X2Ratio])
         y1 = int(cy - h * Detector.Ratios[Y1Ratio])
         y2 = int(cy + h * Detector.Ratios[Y2Ratio])
-        box = DetectBox(x1, y1, x2, y2)
-        return cls.eyeKeeper.keep(box)
+        return DetectBox(x1, y1, x2, y2)
 
     @classmethod
     def detect(cls, frame):
+        ## face detection
         main_detected_box = cls.FACE_DETECTOR.detect(frame)
         tl, br = main_detected_box.getBox()
-        # eye = cls.EYE_DETECTOR.detect(frame, tl, br)
-        eye = cls.approximateEyeLocation(tl, br)
+
+        ## eyes detection
+        eye = cls.EYE_DETECTOR.detect(frame, tl, br)
+        dir = "haar"
+        if eye.isEmpty():
+            dir = "app"
+            eye = cls.approximateEyeLocation(tl, br)
         etl, ebr = eye.getBox()
+
+        ## open / closed eyes classification
         eyeOpenPred = cls.openEyesValidate(frame, etl, ebr)
+
+        ## debug / demo
         detected_img = cv2.rectangle(frame, tl, br, (0,222,0), 2)
         if eyeOpenPred != -1:
             detected_img = cv2.rectangle(detected_img, etl, ebr, OPENEYE_CLASS_LABLES[eyeOpenPred], 2)
-        return detected_img
+        cv2.imwrite(f'tmp/{dir}/Eye#{Detector.ii}.jpg', resizeImg(detected_img, 50))
+        Detector.ii+=1
     
     @classmethod
     def openEyesValidate(cls, frame, etl, ebr) -> int:
@@ -77,19 +87,16 @@ class Detector(object):
         if (cap.isOpened()== False): 
             print(f'Unfound video: {path}')
 
-        ii=0
         while(cap.isOpened()):
             ret, frame = cap.read()
             if ret != True:
                 break
             else:
                 start = time.time()
-                detected_img = cls.detect(frame)
+                cls.detect(frame)
                 end = time.time()
                 print(f'FPS: {1/(end-start)}')
                 ## cv2.imshow('Frame',detected_img)
-                cv2.imwrite(f'tmp/22#{ii}.jpg', resizeImg(detected_img, 50))
-                ii = ii + 1
                 if cv2.waitKey(25) & 0xFF == ord('q'):
                     # Press Q on keyboard to  exit
                     break
