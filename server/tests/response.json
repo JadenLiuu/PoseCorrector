@@ -1,0 +1,358 @@
+{
+    "Results": [
+        {
+            "LineName": "01",
+            "TargetMp4Path": [
+                {
+                    "IP": "192.168.112.101",
+                    "ID": "01",
+                    "Path": "/mnt/192.168.112.101/shot-01-2021-09-27T10_10_00.mp4"
+                },
+                {
+                    "IP": "192.168.112.107",
+                    "ID": "07",
+                    "Path": "/mnt/192.168.112.107/shot-07-2021-09-27T10_10_00.mp4"
+                }
+            ],
+            "Ai": [
+                {
+                    "Shot": "One",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.22"
+                },
+                {
+                    "Shot": "Two",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.33"
+                },
+                {
+                    "Shot": "Three",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.12"
+                },
+                {
+                    "Shot": "Four",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.42"
+                },
+                {
+                    "Shot": "Five",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.15"
+                },
+                {
+                    "Shot": "Six",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.00"
+                }
+            ]
+        },
+        {
+            "LineName": "02",
+            "TargetMp4Path": [
+                {
+                    "IP": "192.168.112.102",
+                    "ID": "02",
+                    "Path": "/mnt/192.168.112.102/shot-02-2021-09-27T10_10_00.mp4"
+                },
+                {
+                    "IP": "192.168.112.108",
+                    "ID": "08",
+                    "Path": "/mnt/192.168.112.108/shot-08-2021-09-27T10_10_00.mp4"
+                }
+            ],
+            "Ai": [
+                {
+                    "Shot": "One",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.22"
+                },
+                {
+                    "Shot": "Two",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.33"
+                },
+                {
+                    "Shot": "Three",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.12"
+                },
+                {
+                    "Shot": "Four",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.42"
+                },
+                {
+                    "Shot": "Five",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.15"
+                },
+                {
+                    "Shot": "Six",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.00"
+                }
+            ]
+        },
+        {
+            "LineName": "03",
+            "TargetMp4Path": [
+                {
+                    "IP": "192.168.112.103",
+                    "ID": "03",
+                    "Path": "/mnt/192.168.112.103/shot-03-2021-09-27T10_10_00.mp4"
+                },
+                {
+                    "IP": "192.168.112.109",
+                    "ID": "00",
+                    "Path": "/mnt/192.168.112.109/shot-09-2021-09-27T10_10_00.mp4"
+                }
+            ],
+            "Ai": [
+                {
+                    "Shot": "One",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.22"
+                },
+                {
+                    "Shot": "Two",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.33"
+                },
+                {
+                    "Shot": "Three",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.12"
+                },
+                {
+                    "Shot": "Four",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.42"
+                },
+                {
+                    "Shot": "Five",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.15"
+                },
+                {
+                    "Shot": "Six",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.00"
+                }
+            ]
+        },
+        {
+            "LineName": "04",
+            "TargetMp4Path": [
+                {
+                    "IP": "192.168.112.104",
+                    "ID": "04",
+                    "Path": "/mnt/192.168.112.104/shot-04-2021-09-27T10_10_00.mp4"
+                },
+                {
+                    "IP": "192.168.112.110",
+                    "ID": "10",
+                    "Path": "/mnt/192.168.112.110/shot-10-2021-09-27T10_10_00.mp4"
+                }
+            ],
+            "Ai": [
+                {
+                    "Shot": "One",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.22"
+                },
+                {
+                    "Shot": "Two",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.33"
+                },
+                {
+                    "Shot": "Three",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.12"
+                },
+                {
+                    "Shot": "Four",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.42"
+                },
+                {
+                    "Shot": "Five",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.15"
+                },
+                {
+                    "Shot": "Six",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.00"
+                }
+            ]
+        },
+        {
+            "LineName": "05",
+            "TargetMp4Path": [
+                {
+                    "IP": "192.168.112.105",
+                    "ID": "05",
+                    "Path": "/mnt/192.168.112.105/shot-05-2021-09-27T10_10_00.mp4"
+                },
+                {
+                    "IP": "192.168.112.111",
+                    "ID": "11",
+                    "Path": "/mnt/192.168.112.111/shot-11-2021-09-27T10_10_00.mp4"
+                }
+            ],
+            "Ai": [
+                {
+                    "Shot": "One",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.22"
+                },
+                {
+                    "Shot": "Two",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.33"
+                },
+                {
+                    "Shot": "Three",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.12"
+                },
+                {
+                    "Shot": "Four",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.42"
+                },
+                {
+                    "Shot": "Five",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.15"
+                },
+                {
+                    "Shot": "Six",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.00"
+                }
+            ]
+        },
+        {
+            "LineName": "06",
+            "TargetMp4Path": [
+                {
+                    "IP": "192.168.112.106",
+                    "ID": "06",
+                    "Path": "/mnt/192.168.112.106/shot-06-2021-09-27T10_10_00.mp4"
+                },
+                {
+                    "IP": "192.168.112.112",
+                    "ID": "12",
+                    "Path": "/mnt/192.168.112.112/shot-12-2021-09-27T10_10_00.mp4"
+                }
+            ],
+            "Ai": [
+                {
+                    "Shot": "One",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.22"
+                },
+                {
+                    "Shot": "Two",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.33"
+                },
+                {
+                    "Shot": "Three",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.12"
+                },
+                {
+                    "Shot": "Four",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.42"
+                },
+                {
+                    "Shot": "Five",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.15"
+                },
+                {
+                    "Shot": "Six",
+                    "EyeClosed": true,
+                    "EyeClosedScore": "0.91",
+                    "IsShrug": false,
+                    "IsShrugScore": "0.00"
+                }
+            ]
+        }
+    ]
+}

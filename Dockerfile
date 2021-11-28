@@ -11,5 +11,6 @@ RUN apt-get upgrade -y && apt-get install \
 
 RUN pip install opencv-contrib-python imutils scipy numpy scikit-image
 RUN pip install dlib torchsummary
+RUN pip install dlib fastapi uvicorn[standard]
 
 WORKDIR /work/
