@@ -19,9 +19,6 @@ class Camera(BaseModel):
 # here we use list for different cameras.
 class LineResponse(BaseModel):
     LineName: str
-    TargetMp4Path: List[Camera]
-    Ai: List[AnalysisResult]
-
-
-class RequestModel(BaseModel):
-    Results: List[LineResponse]
+    Info_Id: str
+    TargetMp4Path: Camera
+    Ai: Optional[List[AnalysisResult]]

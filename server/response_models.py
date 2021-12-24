@@ -11,8 +11,10 @@ class AddressInfo(BaseModel):
  
 class SettingInfo(BaseModel):
     LineName: str
-    Address: List[AddressInfo]
- 
+    Address: List[AddressInfo] 
+    Info_Id: str
+    FilePath: str
+
 class LineInfo(BaseModel):
     LineName: str
     One: str

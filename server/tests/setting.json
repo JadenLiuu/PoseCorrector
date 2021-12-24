@@ -1,6 +1,8 @@
 [
     {
         "LineName": "01",
+        "Info_Id": "1",
+        "FilePath": "/mnt/abc/01/",
         "Address": [
             {
                 "ID": "01",
@@ -14,6 +16,8 @@
     },
     {
         "LineName": "02",
+        "Info_Id": "2",
+        "FilePath": "/mnt/abc/02/",
         "Address": [
             {
                 "ID": "02",
@@ -27,6 +31,8 @@
     },
     {
         "LineName": "03",
+        "Info_Id": "3",
+        "FilePath": "/mnt/abc/03/",
         "Address": [
             {
                 "ID": "03",
@@ -40,6 +46,8 @@
     },
     {
         "LineName": "04",
+        "Info_Id": "4",
+        "FilePath": "/mnt/abc/04/",
         "Address": [
             {
                 "ID": "04",
@@ -53,6 +61,8 @@
     },
     {
         "LineName": "05",
+        "Info_Id": "5",
+        "FilePath": "/mnt/abc/05/",
         "Address": [
             {
                 "ID": "05",
@@ -66,6 +76,8 @@
     },
     {
         "LineName": "06",
+        "Info_Id": "6",
+        "FilePath": "/mnt/abc/06/",
         "Address": [
             {
                 "ID": "06",
