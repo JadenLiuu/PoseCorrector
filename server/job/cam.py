@@ -2,13 +2,15 @@ import multiprocessing as mp
 import time
 import os
 from job.exceptions import *
+import utils.util as utils
+
 
 SetLock = mp.Lock()
 
 class CameraSet(mp.Process):
     ValidCam = set()
 
-    def __init__(self, camId):
+    def __init__(self, camId, startUnixMicroTs):
         mp.Process.__init__(self, daemon=True)
         self.exit = mp.Event()
 
@@ -17,11 +19,14 @@ class CameraSet(mp.Process):
         
         CameraSet.ValidCam.add(camId)
         self.camId = camId
+        self.startUnixMicroTs = startUnixMicroTs
         print(f'{camId} is set up...')
 
-    def set(self, filePath):
+    def set(self, fileDir):
         print(CameraSet.ValidCam)
-        self.filePath = filePath
+        utils.dir_init(fileDir)
+        fileName=f'{self.camId}-{self.startUnixMicroTs}.mp4'
+        self.filePath = os.path.join(fileDir, fileName)
         
     def run(self):
         print('run...')
@@ -31,7 +36,8 @@ class CameraSet(mp.Process):
             # start recording mp4....
         # record done. store to `filePath`
         # done
-        os.system(f"touch tests/tmp/{self.camId}")
+        
+        os.system(f"touch {self.filePath}")
         
     def shutdown(self):
         print("Shutdown initiated")

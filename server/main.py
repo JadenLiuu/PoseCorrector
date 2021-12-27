@@ -40,8 +40,8 @@ async def Start(startInfo: StartInfo):
         for camId in range(1, numCameras+1):
             key = '{:02d}'.format(camId)
             print(f'key:{key}')
-            camShotJobs[key].start_record(key)
-            camTargetJobs[key].start_record(key)
+            camShotJobs[key].start_record(key, startInfo.StartData)
+            camTargetJobs[key].start_record(key, startInfo.StartData)
         return startInfo.dict()
     except Exception as e:
         err = {'Error': f"setting api failed, error: {e}"}
