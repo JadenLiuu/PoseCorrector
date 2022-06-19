@@ -9,8 +9,8 @@ RUN apt-get upgrade -y && apt-get install \
 	libgl1-mesa-glx \
 	build-essential -y
 
-RUN pip install opencv-contrib-python imutils scipy numpy scikit-image
-RUN pip install dlib torchsummary
-RUN pip install dlib fastapi uvicorn[standard]
+RUN pip install pip install opencv-python  opencv-contrib-python imutils scipy numpy scikit-image
+RUN pip install dlib torchsummary 
+RUN pip install fastapi uvicorn[standard]
 
 WORKDIR /work/
