@@ -13,7 +13,6 @@ if __name__ == '__main__':
     frame = cv2.imread(opt.path)
     # frame = cv2.resize(frame, (224, 224)) # w, h, c = 224, 224, 3
 
-
     low_green = np.array([0, 100, 100])
     high_green = np.array([255, 255, 255])
 

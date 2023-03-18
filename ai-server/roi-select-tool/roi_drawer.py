@@ -104,8 +104,13 @@ class IrregularLabeler(Labeler):
         self.roiDict["roiRatio"].append(roiRatio)
 
     def save_rois_to_json(self):
+        roi_dict = {
+            "rois": self.roiDict["rois"][-1],
+            "roiRatio": self.roiDict["roiRatio"][-1],
+        }
+        
         with open(self.jsonNameRoi, "w") as roiJson:
-            roiJson.write(json.dumps(self.roiDict))
+            roiJson.write(json.dumps(roi_dict))
 
     def start_play(self):
         cv2.namedWindow("labeling")
@@ -124,7 +129,7 @@ class IrregularLabeler(Labeler):
 
                 while len(self.refPt) < 2:
                     k = cv2.waitKey(5) & 0xFF
-                    if k == ord("n") or self.leaveTheLoop:
+                    if k == ord("n") or self.leaveTheLoop or k == ord("q"):
                         break
                     self.draw_regular(mat, self.refPt, recurssive=False)
 
