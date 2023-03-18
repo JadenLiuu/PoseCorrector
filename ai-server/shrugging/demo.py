@@ -20,7 +20,7 @@ def detect_color(image):
 def detect_motion(image, min_diff_pixel=20, reset=False):
     if not hasattr(detect_motion, "prev_image"):
         setattr(detect_motion, "prev_image", image)
-        setattr(detect_motion, "threshold", 0.2)
+        setattr(detect_motion, "threshold", 0.21)
         setattr(detect_motion, "totalPixels", image.shape[0] * image.shape[1])
         return 0, False, None
     if reset:
@@ -32,12 +32,18 @@ def detect_motion(image, min_diff_pixel=20, reset=False):
     diff = cv2.absdiff(detect_motion.prev_image, image)
     gray = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
     _, mask_diff = cv2.threshold(gray, min_diff_pixel, 255, cv2.THRESH_BINARY)
+    cv2.imshow('shoulder',  mask_diff)
     nonzeroPixelsDiff = cv2.countNonZero(mask_diff)
     movingPixelRatio = nonzeroPixelsDiff / detect_motion.totalPixels
-    cv2.imshow('shoulder',  mask_diff)
     isMoving = movingPixelRatio > detect_motion.threshold
     
-    if isMoving:
+    print(movingPixelRatio)
+
+    # the action is moving too severly, reset the previous image
+    if movingPixelRatio > 0.28:
+        setattr(detect_motion, "prev_image", image)
+        setattr(detect_motion, "FROZE", 0)
+    elif isMoving:
         setattr(detect_motion, "FROZE", 5)
     return movingPixelRatio ,isMoving, mask_diff
 
