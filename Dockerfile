@@ -1,6 +1,4 @@
 FROM nvcr.io/nvidia/pytorch:21.09-py3
-MAINTAINER jaden.liu
-
 
 RUN apt-get update -y
 RUN apt-get upgrade -y && apt-get install \
