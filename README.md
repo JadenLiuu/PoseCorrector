@@ -11,3 +11,6 @@
 >> docker build -f ./Dockerfile -t nvcr.io/pytorch/gunDev .
 >> docker run --rm --gpus all -v `pwd`:/work/ -i -t nvcr.io/pytorch/gundev:latest bash
 ```
+
+## 設計
+[文件位置](doc/design.md)
