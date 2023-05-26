@@ -8,7 +8,7 @@
 
 ## Docker
 ```bash
->> docker build -f ./Dockerfile -t nvcr.io/pytorch/gunDev .
+>> docker build -f ./Dockerfile -t nvcr.io/pytorch/gundev .
 >> docker run --rm --gpus all -v `pwd`:/work/ -i -t nvcr.io/pytorch/gundev:latest bash
 ```
 
