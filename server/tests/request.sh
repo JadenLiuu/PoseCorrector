@@ -2,10 +2,10 @@
 action="$1"
 if [ $action = "ai" ]
 then
-    curl -X 'POST' http://192.168.112.110/_API/AiDataToDB -H 'Content-Type: application/json' -d  @ai_v2.json
+    curl -X 'POST' http://192.168.101.137/_API/AiDataToDB -H 'Content-Type: application/json' -d  @ai_v2.json
 elif [ $action = "start" ]
 then
-    curl -X 'POST' http://127.0.0.1:8000/ai/Start/ -H 'Content-Type: application/json' -d  @start.json
+    curl -X 'POST' http://127.0.0.1:8000/ai/Start/ -H 'Content-Type: application/json' -d  @start2.json
 elif [ $action = "end" ] 
 then
     curl -X 'POST' http://127.0.0.1:8000/ai/END/ -H 'Content-Type: application/json' -d  @end.json
