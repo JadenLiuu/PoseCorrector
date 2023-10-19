@@ -15,6 +15,9 @@ class SettingInfo(BaseModel):
     Info_Id: str
     FilePath: str
 
+class SettingRequest(BaseModel):
+    Data: List[SettingInfo]
+
 class LineInfo(BaseModel):
     LineName: str
     One: str
@@ -24,6 +27,6 @@ class LineInfo(BaseModel):
     Five: str
     Six: str
 
-class EndInfo(BaseModel):
-    EndData: str
+class EndRequest(BaseModel):
+    EndDate: str
     Data: List[LineInfo]

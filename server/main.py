@@ -47,13 +47,13 @@ async def Start(startInfo: StartInfo):
         err = {'Error': f"setting api failed, error: {e}"}
         return JSONResponse(content=err, status_code=400)
 
-@app.post('/ai/Setting/', response_model=List[SettingInfo], status_code=status.HTTP_201_CREATED)
-async def Setting(settings: List[SettingInfo]):
-    if len(settings) <= 0:
+@app.post('/ai/Setting/', response_model=SettingInfo, status_code=status.HTTP_201_CREATED)
+async def Setting(settingInfo: SettingRequest):
+    if len(settingInfo.Data) <= 0:
         err = {'Error' : 'length of the inputs is zero'}
         return JSONResponse(content = err, status_code=400)
     try:
-        for setInfo in settings:
+        for setInfo in settingInfo.Data:
             if setInfo.LineName not in camTargetJobs.keys():
                 raise Exception(f'{setInfo.LineName} is not valid in jobs')
             if len(setInfo.Address) != 2:
@@ -68,9 +68,9 @@ async def Setting(settings: List[SettingInfo]):
         return JSONResponse(content=err, status_code=400)
 
 
-@app.post('/ai/END/', response_model=List[EndInfo], status_code=status.HTTP_201_CREATED)
-async def End(endInfos: List[EndInfo]):
-    if len(endInfos) <= 0:
+@app.post('/ai/END/', response_model=EndRequest, status_code=status.HTTP_201_CREATED)
+async def End(endInfos: EndRequest):
+    if len(endInfos.Data) <= 0:
         err = {'Error' : 'length of the inputs is zero'}
         return JSONResponse(content = err, status_code=400)
     try:
