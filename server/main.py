@@ -42,7 +42,7 @@ async def Start(startInfo: StartInfo):
             print(f'key:{key}')
             camShotJobs[key].start_record(key, startInfo.StartData)
             camTargetJobs[key].start_record(key, startInfo.StartData)
-        return startInfo.dict()
+        return SUCCESS_RESPONSE
     except Exception as e:
         err = {'Error': f"setting api failed, error: {e}"}
         return JSONResponse(content=err, status_code=400)
