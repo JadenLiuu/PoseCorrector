@@ -86,6 +86,7 @@ if __name__ == '__main__':
 
     prev_mask_diff = None
     frame_counter = 0  
+    output_image_cnt = 1
     while cap.isOpened():
         ret, frame = cap.read()
         frame_counter += 1  
@@ -117,7 +118,9 @@ if __name__ == '__main__':
             if prev_mask_diff is not None:    
                 frame[dst_y1:dst_y2, dst_x1:dst_x2, :] = prev_mask_diff
             if frame_counter in opt.frames:
-                output_filename = f"shooter_shrug_{opt.frames.index(frame_counter)+1}.jpg"
+                # output_filename = f"shooter_shrug_{opt.frames.index(frame_counter)+1}.jpg"
+                output_filename = f"shooter_shrug_{output_image_cnt}.jpg"
+                output_image_cnt += 1
                 print(f"save img : {output_filename}, {mo = }")
                 cv2.imwrite(os.path.join(opt.output_dir, output_filename), frame)
                 # out.write(frame)

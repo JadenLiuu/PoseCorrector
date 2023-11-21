@@ -24,7 +24,16 @@ class Recorder(mp.Process):
 
     def run(self):
         cap = cv2.VideoCapture(self.rtsp)
-        if not cap.isOpened():
+        retry = 0
+        while(retry < 3):
+            if not cap.isOpened():
+                cap.release()
+                cap = cv2.VideoCapture(self.rtsp)
+                retry += 1
+                continue
+            break
+        
+        if retry >= 3:
             print(f"rtsp : {self.rtsp} can't open", flush=True)
             return
         
@@ -42,7 +51,11 @@ class Recorder(mp.Process):
 
         frame_cnt = 0
         frame_time_list = []
+        start_record_time = time.time()
         while not self.exit.is_set():
+            if time.time() - start_record_time >= 180:
+                self.shutdown()
+                continue
             ret, frame = cap.read()
             retry = 0
             if not ret:
@@ -63,7 +76,7 @@ class Recorder(mp.Process):
             if self.fake_video_reader:
                 frame = self.fake_video_reader.get_frame()
             
-            if frame_cnt % self.skip_frame_num == 0:
+            if frame_cnt % self.skip_frame_num == 0 and (not frame is None):
                 frame_time = int(time.time() * 1e6)
                 frame = self.write_time_stamp(frame)
                 out.write(frame)
