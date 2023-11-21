@@ -1,0 +1,1 @@
+sudo mount -t cifs //192.168.101.112/ESMS /mnt/nas --verbose -o vers=3.0,user=admin,password=admin1234,file_mode=0777,dir_mode=0777

@@ -9,31 +9,31 @@ app = FastAPI()
 
 SUCCESS_RESPONSE=JSONResponse(content="succ", status_code=200)
 
-numCameras = 1
+numCameras = 6
 
-camShotJobs = { # lineID -> camera to shooter
-    "01": Job(jobType=Job.TypeShooter)
-}
-camTargetJobs = { # lineID -> camera to target
-    "01": Job(jobType=Job.TypeTarget)
-}
 # camShotJobs = { # lineID -> camera to shooter
-#     "01": Job(jobType=Job.TypeShooter),
-#     "02": Job(jobType=Job.TypeShooter),
-#     "03": Job(jobType=Job.TypeShooter),
-#     "04": Job(jobType=Job.TypeShooter),
-#     "05": Job(jobType=Job.TypeShooter),
-#     "06": Job(jobType=Job.TypeShooter)
+#     "01": Job(jobType=Job.TypeShooter)
 # }
-
 # camTargetJobs = { # lineID -> camera to target
-#     "01": Job(jobType=Job.TypeTarget),
-#     "02": Job(jobType=Job.TypeTarget),
-#     "03": Job(jobType=Job.TypeTarget),
-#     "04": Job(jobType=Job.TypeTarget),
-#     "05": Job(jobType=Job.TypeTarget),
-#     "06": Job(jobType=Job.TypeTarget)
+#     "01": Job(jobType=Job.TypeTarget)
 # }
+camShotJobs = { # lineID -> camera to shooter
+    "01": Job(jobType=Job.TypeShooter),
+    "02": Job(jobType=Job.TypeShooter),
+    "03": Job(jobType=Job.TypeShooter),
+    "04": Job(jobType=Job.TypeShooter),
+    "05": Job(jobType=Job.TypeShooter),
+    "06": Job(jobType=Job.TypeShooter)
+}
+
+camTargetJobs = { # lineID -> camera to target
+    "01": Job(jobType=Job.TypeTarget),
+    "02": Job(jobType=Job.TypeTarget),
+    "03": Job(jobType=Job.TypeTarget),
+    "04": Job(jobType=Job.TypeTarget),
+    "05": Job(jobType=Job.TypeTarget),
+    "06": Job(jobType=Job.TypeTarget)
+}
 
 @app.post('/ai/', response_model=LineResponse, status_code=status.HTTP_201_CREATED)
 async def Ai(startInfo: LineResponse):
@@ -82,17 +82,39 @@ async def Setting(settingInfo: SettingRequest):
 
 @app.post('/ai/END/', response_model=EndRequest, status_code=status.HTTP_201_CREATED)
 async def End(endInfos: EndRequest):
-    end_camera_num = len(endInfos.Data)
+    def _end_record(endInfos):
+        end_camera_num = len(endInfos.Data)
+        for i, camId in enumerate(range(1, numCameras+1)):
+            # try:
+            key = '{:02d}'.format(camId)
+            if i < end_camera_num :
+                camShotJobs[key].end_record(runAI=True, end_data=endInfos.Data[i])
+            else :
+                camShotJobs[key].end_record(runAI=True, end_data=None)
+            camTargetJobs[key].end_record(runAI=False)
+            # except Exception as e:
+            #     print(f"[ERROR] end recording error : {e}")
+
+    
     if len(endInfos.Data) <= 0:
         err = {'Error' : 'length of the inputs is zero'}
+        _end_record(endInfos)
         return JSONResponse(content = err, status_code=400)
     try:
-        for i, camId in enumerate(range(1, end_camera_num+1)):
-            key = '{:02d}'.format(camId)
-            camShotJobs[key].end_record(runAI=True, end_data=endInfos.Data[i])
-            camTargetJobs[key].end_record(runAI=False)
+        _end_record(endInfos)
         return SUCCESS_RESPONSE
     except Exception as e:
         err = {'Error': f"setting api failed, error: {e}"}
         print(f"[End] Error : setting api failed, error : {e}")
-        return JSONResponse(content=err, status_code=40)
+        return JSONResponse(content=err, status_code=400)
+
+@app.post('/ai/Restart/', status_code=status.HTTP_201_CREATED)
+async def Restart():
+    import os
+    try:
+        print(f"[Restart] restarting system")
+        os.system("touch main.py")
+        return SUCCESS_RESPONSE
+    except Exception as e:
+        err = {'Error': f"Restart api failed, error: {e}"}
+        return JSONResponse(content=err, status_code=400)
