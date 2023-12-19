@@ -9,25 +9,31 @@ app = FastAPI()
 
 SUCCESS_RESPONSE=JSONResponse(content="succ", status_code=200)
 
-numCameras = 6
+numCameras = 1
 
 camShotJobs = { # lineID -> camera to shooter
-    "01": Job(jobType=Job.TypeShooter),
-    "02": Job(jobType=Job.TypeShooter),
-    "03": Job(jobType=Job.TypeShooter),
-    "04": Job(jobType=Job.TypeShooter),
-    "05": Job(jobType=Job.TypeShooter),
-    "06": Job(jobType=Job.TypeShooter),
+    "01": Job(jobType=Job.TypeShooter)
 }
+# camShotJobs = { # lineID -> camera to shooter
+#     "01": Job(jobType=Job.TypeShooter),
+#     "02": Job(jobType=Job.TypeShooter),
+#     "03": Job(jobType=Job.TypeShooter),
+#     "04": Job(jobType=Job.TypeShooter),
+#     "05": Job(jobType=Job.TypeShooter),
+#     "06": Job(jobType=Job.TypeShooter),
+# }
 
 camTargetJobs = { # lineID -> camera to target
-    "01": Job(jobType=Job.TypeTarget),
-    "02": Job(jobType=Job.TypeTarget),
-    "03": Job(jobType=Job.TypeTarget),
-    "04": Job(jobType=Job.TypeTarget),
-    "05": Job(jobType=Job.TypeTarget),
-    "06": Job(jobType=Job.TypeTarget),
+    "01": Job(jobType=Job.TypeTarget)
 }
+# camTargetJobs = { # lineID -> camera to target
+#     "01": Job(jobType=Job.TypeTarget),
+#     "02": Job(jobType=Job.TypeTarget),
+#     "03": Job(jobType=Job.TypeTarget),
+#     "04": Job(jobType=Job.TypeTarget),
+#     "05": Job(jobType=Job.TypeTarget),
+#     "06": Job(jobType=Job.TypeTarget),
+# }
 
 @app.post('/ai/', response_model=LineResponse, status_code=status.HTTP_201_CREATED)
 async def Ai(startInfo: LineResponse):

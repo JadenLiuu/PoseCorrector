@@ -1,0 +1,19 @@
+{
+    "Data":[
+        {
+            "LineName": "01",
+            "Info_Id": "1",
+            "FilePath": "/mnt/nas/test/",
+            "Address": [
+                {
+                    "ID": "01",
+                    "IP": "rtsp://admin:123456@192.168.101.81:7070/track1"
+                },
+                {
+                    "ID": "07",
+                    "IP": "rtsp://admin:1qaz@WSX3edc@192.168.101.77:554/media/video1"
+                }
+            ]
+        }
+    ]
+}

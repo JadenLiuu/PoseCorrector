@@ -20,16 +20,25 @@ class Job(object):
     def start_record(self, camId: str, startDate: str):
         self.startUnixMicroTs = utils.now_unix_micro()
         self.camId = f'{self.jobType}-{camId}'
-        self.cameraRecorder = CameraSet(self.camId, self.startUnixMicroTs)
+        if self.jobType == "shooter":
+            ai = True
+        else :
+            ai = False
+        self.cameraRecorder = CameraSet(self.camId, self.startUnixMicroTs, ai=ai)
         self.cameraRecorder.start()
         self.startDate=startDate
 
     def set(self, address: AddressInfo, infoId: str, filePath: str):
+        if self.jobType == "shooter" : 
+            address.IP = f"rtsp://admin:123456@{address.IP}:7070/track1"
+        else:
+            address.IP = f"rtsp://admin:1qaz@WSX3edc@{address.IP}:554/media/video1"
+
         print(f'set....{address}, {infoId}, {filePath}')
         self.address = address
         self.infoId = infoId
-        self.cameraRecorder.set(filePath)
-
+        self.cameraRecorder.set(filePath, address.IP)
+        
     def end_record(self, runAI=False):
         res = None
         if not self.cameraRecorder.isRunning(self.camId):
