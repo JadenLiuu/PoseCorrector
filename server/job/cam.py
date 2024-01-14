@@ -83,6 +83,7 @@ class CameraSet(Thread):
         # 保存圖片
         print("===============================")
         for i, frame in enumerate(saved_frames):
+            
             save_jpg_path = os.path.join(target_dir, f'shooter_{i}.jpg')
             print(f"{save_jpg_path = }")
             cv2.imwrite(save_jpg_path, frame[1])
@@ -111,6 +112,7 @@ class CameraSet(Thread):
         # 保存圖片
         print("===============================")
         for i, frame in enumerate(saved_frames):
+            
             save_jpg_path = os.path.join(target_dir, f'shooting_paper_{i}.jpg')
             print(f"{save_jpg_path = }")
             cv2.imwrite(save_jpg_path, frame[1])
@@ -121,7 +123,10 @@ class CameraSet(Thread):
         fileName=f'{self.camId}-{self.startUnixMicroTs}.mp4'
         # fileDir = "."
         self.filePath = os.path.join(fileDir, fileName)
+        fileDir = fileDir.replace("\\", "/").replace("/192.168.101.112/", "").replace("esms", "/mnt/nas")
         self.fileDir = fileDir
+        if not os.path.exists(fileDir):
+            os.makedirs(fileDir)
         self.rtsp = rtsp
         
     def run(self):
@@ -133,7 +138,7 @@ class CameraSet(Thread):
             self.output_motion_frame(self.fileDir, self.rtsp)
         else:
             self.output_last_frame(self.fileDir, self.rtsp)
-        os.system(f"touch {self.filePath}")
+        # os.system(f"touch {self.filePath}")
         
     def shutdown(self):
         print("Shutdown initiated")

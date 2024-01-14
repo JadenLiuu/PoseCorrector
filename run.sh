@@ -1,7 +1,8 @@
 #!/bin/sh
-sudo docker run  --gpus all \
+sudo docker run  \
                  -v `pwd`:/work/ \
+                 -v /mnt/:/mnt/ \
                  -p 8000:8000 \
                  --network host \
-		         --name pose6 \
-                 -i -t nvcr.io/pytorch/gundev4 bash
+		 --name pose \
+                 -i -t nvcr.io/pytorch/gundev bash

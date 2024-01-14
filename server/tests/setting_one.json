@@ -3,15 +3,15 @@
         {
             "LineName": "01",
             "Info_Id": "1",
-            "FilePath": "/mnt/nas/test/",
+            "FilePath": "\\192.168.101.112\\esms\\20231219\\5-1-1 張三 (A123456789)",
             "Address": [
                 {
                     "ID": "01",
-                    "IP": "rtsp://admin:123456@192.168.101.81:7070/track1"
+                    "IP": "192.168.101.81"
                 },
                 {
                     "ID": "07",
-                    "IP": "rtsp://admin:1qaz@WSX3edc@192.168.101.77:554/media/video1"
+                    "IP": "192.168.101.85"
                 }
             ]
         }
