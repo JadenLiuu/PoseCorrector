@@ -30,7 +30,8 @@ class Job(object):
 
     def set(self, address: AddressInfo, infoId: str, filePath: str):
         if self.jobType == "shooter" : 
-            address.IP = f"rtsp://admin:123456@{address.IP}:7070/track1"
+            # address.IP = f"rtsp://admin:123456@{address.IP}:7070/track1"
+            address.IP = f"rtsp://admin:1qaz@WSX3edc@{address.IP}:554/media/video1"
         else:
             address.IP = f"rtsp://admin:1qaz@WSX3edc@{address.IP}:554/media/video1"
 
