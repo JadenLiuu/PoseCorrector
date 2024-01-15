@@ -32,6 +32,7 @@ class CameraSet(Thread):
         self.video_path = None
         self.fake_video_reader = None
         self.fake_video_reader = FakeVideoReader("/home/dev/fake_video.mp4")
+        self.skip_frame_num = 6
 
     def output_motion_frame(self, target_dir, target_rtsp):
         out = None
@@ -136,8 +137,8 @@ class CameraSet(Thread):
         timestamp = f"{self.startUnixMicroTs}"
         timestamp = timestamp.split(".")[0]
         fileName=f'{self.camId}-{self.startUnixMicroTs}.mp4'
-        # self.video_path = os.path.join(self.fileDir, fileName)
-        self.video_path = os.path.join("/home/dev/Documents/PoseCorrector/server", fileName)
+        self.video_path = os.path.join(self.fileDir, fileName)
+        # self.video_path = os.path.join("/home/dev/Documents/PoseCorrector/server", fileName)
         print(f"create video {self.video_path}", flush=True)
         if not self.fake_video_reader is None:
             pass
@@ -165,6 +166,8 @@ class CameraSet(Thread):
                 continue
             if not self.fake_video_reader is None:
                 frame = self.fake_video_reader.get_frame()
+            if not frame_cnt % self.skip_frame_num == 0:
+                continue
             out.write(frame)
             # print(frame.mean(), flush=True)
         out.release()

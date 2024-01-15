@@ -5,9 +5,10 @@ class FakeVideoReader:
         self.video_path = video_path
         self.cap = None
         self.open_video()
-        self.fps = int(self.cap.get(cv2.CAP_PROP_FPS))
+        self.skip_frame_num = 6
+        self.fps = int(30/self.skip_frame_num)
         self.size = (int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
-        print(self.size, self.fps)
+        print(self.size, )
 
     def open_video(self):
         self.cap = cv2.VideoCapture(self.video_path)
