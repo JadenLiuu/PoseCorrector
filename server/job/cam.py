@@ -101,33 +101,36 @@ class CameraSet(Thread):
 
 
     def output_last_frame(self, target_dir, target_rtsp):
-        cap = cv2.VideoCapture(0)
+        cap = cv2.VideoCapture(target_rtsp)
         if not cap.isOpened():
             print(f"{self.rtsp} can't open")
             exit()
 
-        saved_frames = []
         frame_count = 0
         while not self.exit.is_set():
             ret, frame = cap.read()
+            retry = 0
             if not ret:
-                break
-            # time.sleep(1)
+                print(f"rtsp : {self.rtsp} is broken at frame {frame_count}.......", flush=True)
+                while(retry < 10):
+                    print(f"rtsp : {self.rtsp} reopened {retry} times .......", flush=True)
+                    retry += 1
+                    if cap.isOpened():
+                        break
+                if not cap.isOpened():
+                    break
+                continue
+            time.sleep(1)
             frame_count += 1
 
-            # 每六幀處理一次，以模擬 5 FPS
-            if frame_count % 30 == 0:
-                saved_frames = [(0, frame)]
 
         cap.release()
         cv2.destroyAllWindows()
         # 保存圖片
-        print("===============================")
-        for i, frame in enumerate(saved_frames):
-            
-            save_jpg_path = os.path.join(target_dir, f'shooting_paper_{i}.jpg')
-            print(f"{save_jpg_path = }")
-            cv2.imwrite(save_jpg_path, frame[1])
+        print("===========[output_last_frame end]==============")
+        save_jpg_path = os.path.join(target_dir, f'shooting_paper.jpg')
+        print(f"{save_jpg_path = }")
+        cv2.imwrite(save_jpg_path, frame)
 
     def record(self):
         cap = cv2.VideoCapture(self.rtsp)
