@@ -82,9 +82,9 @@ async def End(endInfos: EndRequest):
     try:
         for camId in range(1, numCameras+1):
             key = '{:02d}'.format(camId)
-            camShotJobs[key].end_record(runAI=True)
+            camShotJobs[key].end_record(runAI=True, end_datas=endInfos.Data)
             camTargetJobs[key].end_record(runAI=False)
         return SUCCESS_RESPONSE
     except Exception as e:
         err = {'Error': f"setting api failed, error: {e}"}
-        return JSONResponse(content=err, status_code=400)
+        return JSONResponse(content=err, status_code=40)

@@ -32,7 +32,7 @@ def detect_motion(image, min_diff_pixel=20, reset=False):
     diff = cv2.absdiff(detect_motion.prev_image, image)
     gray = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
     _, mask_diff = cv2.threshold(gray, min_diff_pixel, 255, cv2.THRESH_BINARY)
-    cv2.imshow('shoulder',  mask_diff)
+    # cv2.imshow('shoulder',  mask_diff)
     nonzeroPixelsDiff = cv2.countNonZero(mask_diff)
     movingPixelRatio = nonzeroPixelsDiff / detect_motion.totalPixels
     isMoving = movingPixelRatio > detect_motion.threshold
@@ -52,6 +52,9 @@ if __name__ == '__main__':
     args = argparse.ArgumentParser()
     args.add_argument("-p", "--video_path", type=str, help='mp4 path', required=True)
     args.add_argument("-r", "--roi_path", type=str, help='path of roi results', required=True)
+    args.add_argument('-o', '--output_path', type=str, default='./output.mp4')
+    args.add_argument('-f', '--frames', type=int, nargs='+', help='list of frames')
+
     opt = args.parse_args()
 
 
@@ -73,9 +76,8 @@ if __name__ == '__main__':
     frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-    # 创建视频编写器
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    out = cv2.VideoWriter('output.mp4', fourcc, fps, (frame_width, frame_height))
+    out = cv2.VideoWriter(opt.output_path, fourcc, fps, (frame_width, frame_height))
 
     prev_mask_diff = None
     while cap.isOpened():
@@ -93,7 +95,7 @@ if __name__ == '__main__':
                 cv2.rectangle(frame, tuple(roi_tl), tuple(roi_br), COLOR_GREEN, 2)
 
             cv2.putText(frame, 'mo: {:02f}'.format(mo), (20, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, COLOR_GREEN, 2)
-            cv2.imshow('frame', frame)
+            # cv2.imshow('frame', frame)
 
             s_height, s_width, _ = shoulderFrame.shape
             dst_x2, dst_y2 = frame.shape[1]-10, frame.shape[0]-10
@@ -106,7 +108,6 @@ if __name__ == '__main__':
                 frame[dst_y1:dst_y2, dst_x1:dst_x2, :] = prev_mask_diff
             out.write(frame)
 
-            # 按q键break loop
             if cv2.waitKey(25) & 0xFF == ord('q'):
                 break
         else:
@@ -114,5 +115,5 @@ if __name__ == '__main__':
 
     cap.release()
     out.release()
-    cv2.destroyAllWindows()
+    # cv2.destroyAllWindows()
     

@@ -8,7 +8,7 @@ then
     curl -X 'POST' http://127.0.0.1:8000/ai/Start/ -H 'Content-Type: application/json' -d  @start2.json
 elif [ $action = "end" ] 
 then
-    curl -X 'POST' http://127.0.0.1:8000/ai/END/ -H 'Content-Type: application/json' -d  @end.json
+    curl -X 'POST' http://127.0.0.1:8000/ai/END/ -H 'Content-Type: application/json' -d  @end3.json
 elif [ $action = "set" ]
 then
     curl -X 'POST' http://127.0.0.1:8000/ai/Setting/ -H 'Content-Type: application/json' -d  @setting_one.json

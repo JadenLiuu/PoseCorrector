@@ -3,7 +3,7 @@ import argparse
 
 
 args = argparse.ArgumentParser()
-args.add_argument('-p', '--path', type=str, default='./tests/videos/test4.mp4')
+args.add_argument('-p', '--path', type=str, default='/home/dev/fake_video.mp4')
 args.add_argument('--eye', type=float, nargs='+', default=[0.18, 0.16, 0.1, 0.1]) # x1, x2, y1, y2
 opt = args.parse_args()
 

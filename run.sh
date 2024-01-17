@@ -4,5 +4,5 @@ sudo docker run  \
                  -v /mnt/:/mnt/ \
                  -p 8000:8000 \
                  --network host \
-		 --name pose \
+                 --name pose \
                  -i -t nvcr.io/pytorch/gundev bash

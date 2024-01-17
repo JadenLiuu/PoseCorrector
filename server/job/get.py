@@ -5,6 +5,32 @@ from job.curlRes import sendInfo
 from job.exceptions import *
 import utils.util as utils
 
+def get_time_points_from_end_data(end_data, fake=False, start_time=None):
+    end_time_points = []    
+    if fake:
+        for i in range(6):
+            end_time_points.append(start_time + i * 1e6)
+        return end_time_points
+    time_point = end_data.One
+    if not len(str(time_point)) <= 20:
+        end_time_points.append(utils.date_to_timestamp(time_point))
+    time_point = end_data.Two
+    if not len(str(time_point)) <= 20:
+        end_time_points.append(utils.date_to_timestamp(time_point))
+    time_point = end_data.Three
+    if not len(str(time_point)) <= 20:
+        end_time_points.append(utils.date_to_timestamp(time_point))
+    time_point = end_data.Four
+    if not len(str(time_point)) <= 20:
+        end_time_points.append(utils.date_to_timestamp(time_point))
+    time_point = end_data.Five
+    if not len(str(time_point)) <= 20:
+        end_time_points.append(utils.date_to_timestamp(time_point))
+    time_point = end_data.Six
+    if not len(str(time_point)) <= 20:
+        end_time_points.append(utils.date_to_timestamp(time_point))
+
+    return end_time_points
 
 class Job(object):
     TypeShooter="shooter"
@@ -30,8 +56,8 @@ class Job(object):
 
     def set(self, address: AddressInfo, infoId: str, filePath: str):
         if self.jobType == "shooter" : 
-            # address.IP = f"rtsp://admin:123456@{address.IP}:7070/track1"
-            address.IP = f"rtsp://admin:1qaz@WSX3edc@{address.IP}:554/media/video1"
+            address.IP = f"rtsp://admin:123456@{address.IP}:7070/track1"
+            # address.IP = f"rtsp://admin:1qaz@WSX3edc@{address.IP}:554/media/video1"
         else:
             address.IP = f"rtsp://admin:1qaz@WSX3edc@{address.IP}:554/media/video1"
 
@@ -39,17 +65,21 @@ class Job(object):
         self.address = address
         self.infoId = infoId
         self.cameraRecorder.set(filePath, address.IP)
-        
-    def end_record(self, runAI=False):
+    
+    def end_record(self, runAI=False, end_datas=None):
         res = None
         if not self.cameraRecorder.isRunning(self.camId):
             raise NOTRUNNING
     
-        filePath = self.cameraRecorder.shutdown()
+        filePath, start_time = self.cameraRecorder.shutdown()
         self.cameraRecorder.join()
         self.cameraRecorder.release()
-
         if runAI:
+            print(f"received end data : {end_datas}", flush=True)
+            for end_data in end_datas:
+                end_time_points = get_time_points_from_end_data(end_data, fake=True, start_time=start_time)
+                print(f"{end_time_points = }", flush=True)
+                
             # todo: use the filePath to get the ai result of the input mp4
             sendInfo(LineResponse(
                 LineName=self.camId, 

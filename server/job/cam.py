@@ -28,10 +28,11 @@ class CameraSet(Thread):
         self.startUnixMicroTs = startUnixMicroTs
         print(f'{camId} is set up...')
         self.rtsp = None
+        self.start_time = None
         self.fileDir = None
         self.video_path = None
         self.fake_video_reader = None
-        self.fake_video_reader = FakeVideoReader("/home/dev/fake_video.mp4")
+        # self.fake_video_reader = FakeVideoReader("/home/dev/fake_video.mp4")
         self.skip_frame_num = 6
 
     def output_motion_frame(self, target_dir, target_rtsp):
@@ -137,12 +138,8 @@ class CameraSet(Thread):
         if not cap.isOpened():
             print(f"rtsp : {self.rtsp} can't open", flush=True)
             exit()
-        timestamp = f"{self.startUnixMicroTs}"
-        timestamp = timestamp.split(".")[0]
-        fileName=f'{self.camId}-{self.startUnixMicroTs}.mp4'
-        self.video_path = os.path.join(self.fileDir, fileName)
-        # self.video_path = os.path.join("/home/dev/Documents/PoseCorrector/server", fileName)
-        print(f"create video {self.video_path}", flush=True)
+        self.start_time = int(self.startUnixMicroTs)
+        fileName=f'{self.start_time}.mp4'
         if not self.fake_video_reader is None:
             pass
             fps = self.fake_video_reader.fps
@@ -150,16 +147,23 @@ class CameraSet(Thread):
         else:
             fps = cap.get(cv2.CAP_PROP_FPS)
             image_size = (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
+        self.video_path = os.path.join(self.fileDir, fileName)
+        # self.video_path = os.path.join("/home/dev/Documents/PoseCorrector/server", fileName)
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
         out = cv2.VideoWriter(self.video_path, fourcc, fps, image_size)
+        print(f"created video {self.video_path}", flush=True)
         frame_cnt = 0
         while not self.exit.is_set():
-            retry = 0
             ret, frame = cap.read()
             frame_cnt += 1
             if not ret:
+                if retry >= 10:
+                    print(f"rtsp : {self.rtsp} is broken and retry more than {retry} times", flush=True)
                 print(f"rtsp : {self.rtsp} is broken at frame {frame_cnt}.......", flush=True)
                 while(retry < 10):
+                    cap.release()
+                    cap = cv2.VideoCapture(self.rtsp)
+
                     print(f"rtsp : {self.rtsp} reopened {retry} times .......", flush=True)
                     retry += 1
                     if cap.isOpened():
@@ -205,7 +209,7 @@ class CameraSet(Thread):
         print("Shutdown initiated")
         self.exit.set()
 
-        return self.video_path
+        return self.video_path, self.start_time
 
     def release(self):
         if self.isRunning:
