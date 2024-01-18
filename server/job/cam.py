@@ -108,9 +108,9 @@ class CameraSet(Thread):
             exit()
 
         frame_count = 0
+        retry = 0
         while not self.exit.is_set():
             ret, frame = cap.read()
-            retry = 0
             if not ret:
                 print(f"rtsp : {self.rtsp} is broken at frame {frame_count}.......", flush=True)
                 while(retry < 10):
@@ -121,7 +121,7 @@ class CameraSet(Thread):
                 if not cap.isOpened():
                     break
                 continue
-            time.sleep(1)
+            # time.sleep(1)
             frame_count += 1
 
 
@@ -189,7 +189,7 @@ class CameraSet(Thread):
     def set(self, fileDir, rtsp):
         print(CameraSet.ValidCam)
         # fileDir = "."
-        fileDir = fileDir.replace("\\", "/").replace("/192.168.101.112/", "").replace("esms", "/mnt/nas")
+        fileDir = fileDir.replace("\\", "/").replace("/192.168.101.112/", "").replace("esms", "/home/dev/Desktop/fake_nas")
         self.rtsp = rtsp
         self.fileDir = fileDir
         utils.dir_init(fileDir)
