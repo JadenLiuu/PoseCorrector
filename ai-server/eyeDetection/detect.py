@@ -14,21 +14,29 @@ Y1Ratio="Y1Ratio"
 Y2Ratio="Y2Ratio"
 
 OPENEYE_CLASS_LABLES = [(0,0, 255),(0, 244, 0)]
-
-eyeClosedModelPath = os.path.join(os.getcwd(), "eyeDetection/validate/modelEye.t7")
+cwd = os.getcwd()
+cwd = "/home/dev/Documents/PoseCorrector/ai-server"
+eyeClosedModelPath = os.path.join(cwd, "eyeDetection/validate/modelEye.t7")
 
 class Detector(object):
     FACE_DETECTOR = FaceDetector()
     # EYE_DETECTOR = EyeDetector()
     EYE_DETECTOR = EyeDetectorHaarCascades()
     Ratios = {}
+    frame_numbers = []
+    output_dir = None
     EYECLOSED_VALIDATOR = Validation(eyeClosedModelPath)
     eyeKeeper = StableKeeper()
-    ii = 0
+    ii = 1
     
     @classmethod
-    def setConfig(cls, x1Ratio=0.24, x2Ratio=0.2, y1Ratio=0.2, y2Ratio=0.2):
+    def setConfig(cls, output_dir, frames, x1Ratio=0.24, x2Ratio=0.2, y1Ratio=0.2, y2Ratio=0.2):
+        print(f"CONFIG SET FOR output_dir:{output_dir}")
+        print(f"CONFIG SET FOR frame_numbers:{frames}")
         print(f"CONFIG SET FOR x1, x2, y1, y2 Ratios:{x1Ratio, x2Ratio, y1Ratio, y2Ratio}")
+
+        Detector.output_dir = output_dir
+        Detector.frame_numbers = frames
         Detector.Ratios.setdefault(X1Ratio, x1Ratio)
         Detector.Ratios.setdefault(X2Ratio, x2Ratio)
         Detector.Ratios.setdefault(Y1Ratio, y1Ratio)
@@ -66,7 +74,9 @@ class Detector(object):
         detected_img = cv2.rectangle(frame, tl, br, (0,222,0), 2)
         if eyeOpenPred != -1:
             detected_img = cv2.rectangle(detected_img, etl, ebr, OPENEYE_CLASS_LABLES[eyeOpenPred], 2)
-        cv2.imwrite(f'tmp/{dir}/Eye#{Detector.ii}.jpg', resizeImg(detected_img, 50))
+        
+        img_save_path = os.path.join(Detector.output_dir, f'shooter_eye_{Detector.ii}.jpg')
+        cv2.imwrite(img_save_path, detected_img)
         Detector.ii+=1
     
     @classmethod
@@ -86,19 +96,21 @@ class Detector(object):
         cap = cv2.VideoCapture(path)
         if (cap.isOpened()== False): 
             print(f'Unfound video: {path}')
-
+        frame_cnt = 0
         while(cap.isOpened()):
+            frame_cnt += 1
             ret, frame = cap.read()
             if ret != True:
                 break
-            else:
-                start = time.time()
-                cls.detect(frame)
-                end = time.time()
-                print(f'FPS: {1/(end-start)}')
-                ## cv2.imshow('Frame',detected_img)
-                if cv2.waitKey(25) & 0xFF == ord('q'):
-                    # Press Q on keyboard to  exit
-                    break
+            if not frame_cnt in Detector.frame_numbers:
+                continue
+            start = time.time()
+            cls.detect(frame)
+            end = time.time()
+            print(f'FPS: {1/(end-start)}')
+            ## cv2.imshow('Frame',detected_img)
+            if cv2.waitKey(25) & 0xFF == ord('q'):
+                # Press Q on keyboard to  exit
+                break
         cap.release()
-        cv2.destroyAllWindows()
+        # cv2.destroyAllWindows()

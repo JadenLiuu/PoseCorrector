@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import argparse
 import json
+import os
 
 low_green = np.array([0, 100, 100])
 high_green = np.array([255, 255, 255])
@@ -37,7 +38,7 @@ def detect_motion(image, min_diff_pixel=20, reset=False):
     movingPixelRatio = nonzeroPixelsDiff / detect_motion.totalPixels
     isMoving = movingPixelRatio > detect_motion.threshold
     
-    print(movingPixelRatio)
+    # print(movingPixelRatio)
 
     # the action is moving too severly, reset the previous image
     if movingPixelRatio > 0.28:
@@ -53,9 +54,12 @@ if __name__ == '__main__':
     args.add_argument("-p", "--video_path", type=str, help='mp4 path', required=True)
     args.add_argument("-r", "--roi_path", type=str, help='path of roi results', required=True)
     args.add_argument('-o', '--output_path', type=str, default='./output.mp4')
-    args.add_argument('-f', '--frames', type=int, nargs='+', help='list of frames')
+    args.add_argument('-f', '--frames', type=int, nargs='+',default=[1,2,3,4,5,6], help='list of frames')
+    args.add_argument('-d', '--output_dir', type=str, required=True, help='directory to save output images')
 
     opt = args.parse_args()
+    if not os.path.exists(opt.output_dir):
+        os.makedirs(opt.output_dir)
 
 
     roi_tl, roi_br = None, None
@@ -76,14 +80,17 @@ if __name__ == '__main__':
     frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    out = cv2.VideoWriter(opt.output_path, fourcc, fps, (frame_width, frame_height))
+    # fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    # out = cv2.VideoWriter(opt.output_path, fourcc, fps, (frame_width, frame_height))
 
     prev_mask_diff = None
+    frame_counter = 0  
     while cap.isOpened():
         ret, frame = cap.read()
+        frame_counter += 1  
 
         if ret:
+            
             # core things we care start
             shoulderFrame = frame[y1:y2, x1:x2]
             mo, is_moving, mask_diff = detect_motion(shoulderFrame)
@@ -106,14 +113,18 @@ if __name__ == '__main__':
                 
             if prev_mask_diff is not None:    
                 frame[dst_y1:dst_y2, dst_x1:dst_x2, :] = prev_mask_diff
-            out.write(frame)
+            if frame_counter in opt.frames:
+                output_filename = f"shooter_shrug_{opt.frames.index(frame_counter)+1}.jpg"
+                print(f"save img : {output_filename}, {mo = }")
+                cv2.imwrite(os.path.join(opt.output_dir, output_filename), frame)
+                # out.write(frame)
 
-            if cv2.waitKey(25) & 0xFF == ord('q'):
-                break
+            # if cv2.waitKey(25) & 0xFF == ord('q'):
+            #     break
         else:
             break
 
     cap.release()
-    out.release()
+    # out.release()
     # cv2.destroyAllWindows()
     
