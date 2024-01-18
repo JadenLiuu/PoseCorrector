@@ -38,7 +38,7 @@ def timestamp_to_frameNums(start_time, time_points):
     for time_point in time_points:
         frame_num = int((time_point - start_time)/interval)
         if frame_num >= 1:
-            output.append()
+            output.append(frame_num)
     return output
 
 class Job(object):
@@ -89,6 +89,9 @@ class Job(object):
             print(f"{end_time_points = }, {start_time = }", flush=True)
             frame_numbers = timestamp_to_frameNums(start_time, end_time_points)
             frame_numbers_str = " ".join(str(number) for number in frame_numbers)
+            if len(frame_numbers) == 0:
+                print(f"no shaking frames")
+                return res
             print(f"{frame_numbers_str = }")
             # todo: use the filePath to get the ai result of the input mp4
             sendInfo2(filePath, frame_numbers_str)
@@ -104,3 +107,10 @@ class Job(object):
         elapsed = utils.now_unix_micro()-self.startUnixMicroTs
         print(f'elapsed: {elapsed}')
         return res
+
+if __name__ == "__main__":
+    end_time_points = [1705558805884000, 1705558806464000, 1705558807384000, 1705558808944000, 1705558808904000, 1705558820626000]
+    start_time = 1705558798903649
+    frame_numbers = timestamp_to_frameNums(start_time, end_time_points)
+    frame_numbers_str = " ".join(str(number) for number in frame_numbers)
+    print(f"{frame_numbers_str = }")
