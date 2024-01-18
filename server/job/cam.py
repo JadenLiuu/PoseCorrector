@@ -153,6 +153,7 @@ class CameraSet(Thread):
         out = cv2.VideoWriter(self.video_path, fourcc, fps, image_size)
         print(f"created video {self.video_path}", flush=True)
         frame_cnt = 0
+        retry = 0
         while not self.exit.is_set():
             ret, frame = cap.read()
             frame_cnt += 1

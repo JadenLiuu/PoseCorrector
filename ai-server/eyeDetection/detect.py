@@ -76,6 +76,7 @@ class Detector(object):
             detected_img = cv2.rectangle(detected_img, etl, ebr, OPENEYE_CLASS_LABLES[eyeOpenPred], 2)
         
         img_save_path = os.path.join(Detector.output_dir, f'shooter_eye_{Detector.ii}.jpg')
+        print(f"[EYE-DETECT] save image : {img_save_path}", flush=True)
         cv2.imwrite(img_save_path, detected_img)
         Detector.ii+=1
     
@@ -104,6 +105,7 @@ class Detector(object):
                 break
             if not frame_cnt in Detector.frame_numbers:
                 continue
+            print(f"[EYE-DETECT] analyze frame : {frame_cnt}", flush=True)
             start = time.time()
             cls.detect(frame)
             end = time.time()

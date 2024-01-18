@@ -70,7 +70,7 @@ if __name__ == '__main__':
 
     x1, y1 = roi_tl
     x2, y2 = roi_br
-
+    print(f"[Shrug] reading video : {opt.video_path}")
     cap = cv2.VideoCapture(opt.video_path)
     if not cap.isOpened():
         print("Error opening video file")

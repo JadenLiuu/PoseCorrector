@@ -80,9 +80,9 @@ async def End(endInfos: EndRequest):
         err = {'Error' : 'length of the inputs is zero'}
         return JSONResponse(content = err, status_code=400)
     try:
-        for camId in range(1, numCameras+1):
+        for i, camId in enumerate(range(1, numCameras+1)):
             key = '{:02d}'.format(camId)
-            camShotJobs[key].end_record(runAI=True, end_datas=endInfos.Data)
+            camShotJobs[key].end_record(runAI=True, end_data=endInfos.Data[i])
             camTargetJobs[key].end_record(runAI=False)
         return SUCCESS_RESPONSE
     except Exception as e:
