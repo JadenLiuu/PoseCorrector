@@ -8,6 +8,7 @@ from eyeDetection import *
 from . import face_utils as utils
 
 cwd = os.getcwd()
+cwd = "/home/dev/Documents/PoseCorrector/ai-server"
 
 class EyeDetectorHaarCascades(object):
     __path = os.path.join(cwd, 'eyeDetection', 'detection-model', 'eye_haarcascades.xml')

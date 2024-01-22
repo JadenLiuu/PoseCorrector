@@ -3,7 +3,8 @@ import numpy as np
 import cv2
 import os
 
-cwd = os.getcwd()
+# cwd = os.getcwd()
+cwd = "/home/dev/Documents/PoseCorrector/ai-server"
 
 class FaceDetector(object):
     MODEL_FILE = os.path.join(cwd, 'eyeDetection', 'detection-model', 'opencv_face_detector_uint8.pb')
