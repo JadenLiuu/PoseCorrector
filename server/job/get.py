@@ -7,6 +7,8 @@ import utils.util as utils
 
 def get_time_points_from_end_data(end_data, fake=False, start_time=None):
     end_time_points = []    
+    if end_data is None:
+        return end_time_points
     if fake:
         for i in range(6):
             end_time_points.append(start_time + i * 1e6)
@@ -41,6 +43,29 @@ def timestamp_to_frameNums(start_time, time_points):
             output.append(frame_num)
     return output
 
+def timestamp_to_frameNums_by_log(filePath, end_time_points):
+    log_path = filePath.replace(".mp4", ".log")
+    print(f"{log_path = }")
+    with open(log_path, "r") as f:
+        lines = f.readlines()
+
+    lines = [int(i.replace("\n", "")) for i in lines ]
+    output = []
+    for end_time in end_time_points:
+        closet_frmae = -1
+        closet_time = -1
+        for frame_num, frame_time in enumerate(lines):
+            # print(f"{frame_num = }, {frame_time = }")
+            if abs(end_time - frame_time) < (end_time - closet_time):
+                closet_time = frame_time
+                closet_frmae = frame_num
+        if frame_num >= 0:
+            output.append(closet_frmae)
+
+    return output
+    
+
+
 class Job(object):
     TypeShooter="shooter"
     TypeTarget="target"
@@ -65,8 +90,8 @@ class Job(object):
 
     def set(self, address: AddressInfo, infoId: str, filePath: str):
         if self.jobType == "shooter" : 
-            address.IP = f"rtsp://admin:123456@{address.IP}:7070/track1"
-            # address.IP = f"rtsp://admin:1qaz@WSX3edc@{address.IP}:554/media/video1"
+            #address.IP = f"rtsp://admin:123456@{address.IP}:7070/track1"
+            address.IP = f"rtsp://admin:1qaz@WSX3edc@{address.IP}:554/media/video1"
         else:
             address.IP = f"rtsp://admin:1qaz@WSX3edc@{address.IP}:554/media/video1"
 
@@ -87,7 +112,7 @@ class Job(object):
             print(f"received end data : {end_data}", flush=True)
             end_time_points = get_time_points_from_end_data(end_data, fake=False, start_time=start_time)
             print(f"{end_time_points = }, {start_time = }", flush=True)
-            frame_numbers = timestamp_to_frameNums(start_time, end_time_points)
+            frame_numbers = timestamp_to_frameNums_by_log(filePath, end_time_points)
             frame_numbers_str = " ".join(str(number) for number in frame_numbers)
             if len(frame_numbers) == 0:
                 print(f"no shaking frames")

@@ -14,25 +14,25 @@ numCameras = 1
 camShotJobs = { # lineID -> camera to shooter
     "01": Job(jobType=Job.TypeShooter)
 }
+camTargetJobs = { # lineID -> camera to target
+    "01": Job(jobType=Job.TypeTarget)
+}
 # camShotJobs = { # lineID -> camera to shooter
 #     "01": Job(jobType=Job.TypeShooter),
 #     "02": Job(jobType=Job.TypeShooter),
 #     "03": Job(jobType=Job.TypeShooter),
 #     "04": Job(jobType=Job.TypeShooter),
 #     "05": Job(jobType=Job.TypeShooter),
-#     "06": Job(jobType=Job.TypeShooter),
+#     "06": Job(jobType=Job.TypeShooter)
 # }
 
-camTargetJobs = { # lineID -> camera to target
-    "01": Job(jobType=Job.TypeTarget)
-}
 # camTargetJobs = { # lineID -> camera to target
 #     "01": Job(jobType=Job.TypeTarget),
 #     "02": Job(jobType=Job.TypeTarget),
 #     "03": Job(jobType=Job.TypeTarget),
 #     "04": Job(jobType=Job.TypeTarget),
 #     "05": Job(jobType=Job.TypeTarget),
-#     "06": Job(jobType=Job.TypeTarget),
+#     "06": Job(jobType=Job.TypeTarget)
 # }
 
 @app.post('/ai/', response_model=LineResponse, status_code=status.HTTP_201_CREATED)
@@ -82,11 +82,12 @@ async def Setting(settingInfo: SettingRequest):
 
 @app.post('/ai/END/', response_model=EndRequest, status_code=status.HTTP_201_CREATED)
 async def End(endInfos: EndRequest):
+    end_camera_num = len(endInfos.Data)
     if len(endInfos.Data) <= 0:
         err = {'Error' : 'length of the inputs is zero'}
         return JSONResponse(content = err, status_code=400)
     try:
-        for i, camId in enumerate(range(1, numCameras+1)):
+        for i, camId in enumerate(range(1, end_camera_num+1)):
             key = '{:02d}'.format(camId)
             camShotJobs[key].end_record(runAI=True, end_data=endInfos.Data[i])
             camTargetJobs[key].end_record(runAI=False)

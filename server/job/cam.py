@@ -8,9 +8,76 @@ import cv2
 import numpy as np
 from utils.fake_video_reader import FakeVideoReader
 import shutil
+import datetime
 SetLock = mp.Lock()
 
+class Recorder(mp.Process):
+    def __init__(self, start_time, rtsp, fileDir, startUnixMicroTs, skip_frame_num, fake_video_reader=None):
+        super().__init__()
+        self.start_time = start_time
+        self.rtsp = rtsp
+        self.fileDir = fileDir
+        self.startUnixMicroTs = startUnixMicroTs
+        self.skip_frame_num = skip_frame_num
+        self.fake_video_reader = fake_video_reader
+        self.exit = mp.Event()
 
+    def run(self):
+        cap = cv2.VideoCapture(self.rtsp)
+        if not cap.isOpened():
+            print(f"rtsp : {self.rtsp} can't open", flush=True)
+            return
+        
+        # self.start_time = int(self.startUnixMicroTs)
+        start_time = time.time()
+        fileName = f'{self.start_time}.mp4'
+        vid_log_name = f'{self.start_time}.log'
+        video_path = os.path.join(self.fileDir, fileName)
+        vid_log_path = os.path.join(self.fileDir, vid_log_name)
+        fps = cap.get(cv2.CAP_PROP_FPS) if not self.fake_video_reader else self.fake_video_reader.fps
+        image_size = (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))) if not self.fake_video_reader else self.fake_video_reader.size
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+        out = cv2.VideoWriter(video_path, fourcc, fps, image_size)
+        print(f"created video {video_path}", flush=True)
+
+        frame_cnt = 0
+        frame_time_list = []
+        while not self.exit.is_set():
+            ret, frame = cap.read()
+            if not ret:
+                print(f"rtsp : {self.rtsp} is broken at frame {frame_cnt}.......", flush=True)
+                break
+            
+            if self.fake_video_reader:
+                frame = self.fake_video_reader.get_frame()
+            
+            if frame_cnt % self.skip_frame_num == 0:
+                frame_time = int(time.time() * 1e6)
+                frame = self.write_time_stamp(frame)
+                out.write(frame)
+                frame_time_list.append(frame_time)
+
+            frame_cnt += 1
+
+        out.release()
+        cap.release()
+        if self.fake_video_reader:
+            self.fake_video_reader.close_video()
+
+        with open(vid_log_path, "w+") as f:
+            f.write("\n".join(str(i) for i in frame_time_list))
+        print(f"Recording stopped and video saved to {video_path}")
+
+    def shutdown(self):
+        self.exit.set()
+
+    def write_time_stamp(self, frame):
+        now = datetime.datetime.now()
+        time_str = now.strftime("%Y%m%d %H:%M:%S.%f")[:-3]
+        height, width = frame.shape[:2]
+        position = (10, height - 10)
+        cv2.putText(frame, time_str, position, cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+        return frame
 
 class CameraSet(Thread):
     ValidCam = set()
@@ -31,6 +98,7 @@ class CameraSet(Thread):
         self.start_time = None
         self.fileDir = None
         self.video_path = None
+        self.vid_log_path = None
         self.fake_video_reader = None
         # self.fake_video_reader = FakeVideoReader("/home/dev/fake_video.mp4")
         self.skip_frame_num = 6
@@ -124,7 +192,7 @@ class CameraSet(Thread):
             # time.sleep(1)
             frame_count += 1
 
-
+        ret, frame = cap.read()
         cap.release()
         cv2.destroyAllWindows()
         # 保存圖片
@@ -133,13 +201,21 @@ class CameraSet(Thread):
         print(f"{save_jpg_path = }")
         cv2.imwrite(save_jpg_path, frame)
 
+
+    '''
     def record(self):
         cap = cv2.VideoCapture(self.rtsp)
         if not cap.isOpened():
             print(f"rtsp : {self.rtsp} can't open", flush=True)
             exit()
+        ret = False
+        while(not ret):
+            ret, _ = cap.read()
+
         self.start_time = int(self.startUnixMicroTs)
+        start_time = time.time()
         fileName=f'{self.start_time}.mp4'
+        self.vid_log_name = f'{self.start_time}.log'
         if not self.fake_video_reader is None:
             pass
             fps = self.fake_video_reader.fps
@@ -148,15 +224,20 @@ class CameraSet(Thread):
             fps = cap.get(cv2.CAP_PROP_FPS)
             image_size = (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
         self.video_path = os.path.join(self.fileDir, fileName)
+        self.vid_log_path = os.path.join(self.fileDir, self.vid_log_name)
         # self.video_path = os.path.join("/home/dev/Documents/PoseCorrector/server", fileName)
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
         out = cv2.VideoWriter(self.video_path, fourcc, fps, image_size)
         print(f"created video {self.video_path}", flush=True)
         frame_cnt = 0
         retry = 0
+        frame_time_list = []
         while not self.exit.is_set():
             ret, frame = cap.read()
             frame_cnt += 1
+            if time.time() - start_time > 180:
+                print(f"[Error] {self.rtsp} has ended recording for timeout ( > 180 sec )", flush=True)
+                break
             if not ret:
                 if retry >= 10:
                     print(f"rtsp : {self.rtsp} is broken and retry more than {retry} times", flush=True)
@@ -176,40 +257,54 @@ class CameraSet(Thread):
                 frame = self.fake_video_reader.get_frame()
             if not frame_cnt % self.skip_frame_num == 0:
                 continue
+            frame_time = int(time.time() * 1e6)
+            frame = self.write_time_stamp(frame)
             out.write(frame)
+            frame_time_list.append(frame_time)
             # print(frame.mean(), flush=True)
+
+        with open(self.vid_log_path, "w+") as f:
+            f.write("\n".join(str(i) for i in frame_time_list))
         out.release()
         cap.release()
         # shutil.move(self.video_path, self.fileDir)
         if not self.fake_video_reader is None:
             self.fake_video_reader.close_video()
             
-
+    '''
 
     def set(self, fileDir, rtsp):
         print(CameraSet.ValidCam)
         # fileDir = "."
-        fileDir = fileDir.replace("\\", "/").replace("/192.168.101.112/", "").replace("esms", "/home/dev/Desktop/fake_nas")
+        fileDir = fileDir.replace("\\", "/").replace("/192.168.101.112/", "").replace("esms", "/mnt/nas")
         self.rtsp = rtsp
         self.fileDir = fileDir
         utils.dir_init(fileDir)
+        print(f"init dir : {fileDir}")
         print(f"{self.rtsp = }")
         
     def run(self):
         print('run...')
         recording = False
-        while(self.fileDir is None):
+        while self.fileDir is None:
             time.sleep(0.001)
         if self.ai:
-            self.record()
-        else:
-            self.output_last_frame(self.fileDir, self.rtsp)
-        # os.system(f"touch {self.video_path}")
-        
+            self.start_time = int(self.startUnixMicroTs)
+            fileName = f'{self.start_time}.mp4'
+            self.video_path = os.path.join(self.fileDir, fileName)
+            self.recorder = Recorder(self.start_time, self.rtsp, self.fileDir, self.startUnixMicroTs, self.skip_frame_num, self.fake_video_reader)
+            self.recorder.start()
+
+
+            
     def shutdown(self):
         print("Shutdown initiated")
+        if hasattr(self, 'recorder') and self.recorder.is_alive():
+            self.recorder.shutdown()
+            self.recorder.join()
         self.exit.set()
-
+        if not self.ai:
+            self.output_last_frame(self.fileDir, self.rtsp)
         return self.video_path, self.start_time
 
     def release(self):

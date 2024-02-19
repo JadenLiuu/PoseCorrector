@@ -14,6 +14,8 @@ Y1Ratio="Y1Ratio"
 Y2Ratio="Y2Ratio"
 
 OPENEYE_CLASS_LABLES = [(0,0, 255),(0, 244, 0)]
+OPENEYE_CLASS_LABLES_STR = ["Failed! The shooter closed eyes!"\
+                            "Pass! The shooter kept eyes opened!"]
 cwd = os.getcwd()
 cwd = "/home/dev/Documents/PoseCorrector/ai-server"
 eyeClosedModelPath = os.path.join(cwd, "eyeDetection/validate/modelEye.t7")
@@ -74,6 +76,8 @@ class Detector(object):
         detected_img = cv2.rectangle(frame, tl, br, (0,222,0), 2)
         if eyeOpenPred != -1:
             detected_img = cv2.rectangle(detected_img, etl, ebr, OPENEYE_CLASS_LABLES[eyeOpenPred], 2)
+            cv2.putText(frame, OPENEYE_CLASS_LABLES_STR[eyeOpenPred], (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, OPENEYE_CLASS_LABLES[eyeOpenPred], 2)
+
         
         img_save_path = os.path.join(Detector.output_dir, f'shooter_eye_{Detector.ii}.jpg')
         print(f"[EYE-DETECT] save image : {img_save_path}", flush=True)
