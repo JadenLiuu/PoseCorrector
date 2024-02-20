@@ -7,6 +7,8 @@ import os
 from eyeDetection.eye_detector_haar_cascades import *
 
 cwd = os.getcwd()
+cwd = "/home/dev/Documents/PoseCorrector/ai-server"
+
 USE_CUDA = dlib.DLIB_USE_CUDA
 LEFT_KEY = "left"
 RIGHT_KEY = "right"
