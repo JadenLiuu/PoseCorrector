@@ -46,7 +46,7 @@ class Recorder(mp.Process):
         fps = cap.get(cv2.CAP_PROP_FPS) if not self.fake_video_reader else self.fake_video_reader.fps
         image_size = (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))) if not self.fake_video_reader else self.fake_video_reader.size
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        out = cv2.VideoWriter(video_path, fourcc, fps, image_size)
+        out = cv2.VideoWriter(video_path, fourcc, 5, image_size)
         print(f"created video {video_path}", flush=True)
 
         frame_cnt = 0
@@ -126,7 +126,7 @@ class CameraSet(Thread):
         self.vid_log_path = None
         self.fake_video_reader = None
         # self.fake_video_reader = FakeVideoReader("/home/dev/fake_video.mp4")
-        self.skip_frame_num = 6
+        self.skip_frame_num =3 
 
     def output_motion_frame(self, target_dir, target_rtsp):
         out = None
@@ -196,28 +196,21 @@ class CameraSet(Thread):
 
     def output_last_frame(self, target_dir, target_rtsp):
         cap = cv2.VideoCapture(target_rtsp)
-        if not cap.isOpened():
+        retry = 1
+        while(retry <= 10):
+            if not cap.isOpened():
+                print(f"[output_last_frame] times : {retry} reopen rtsp : {target_rtsp}")
+                cap.release()
+                cap = cv2.VideoCapture(target_rtsp)
+                continue
+            break
+            
+        if retry > 10:
             print(f"ERROR {self.rtsp} can't open")
             return
-
-        frame_count = 0
-        retry = 0
-        while not self.exit.is_set():
-            ret, frame = cap.read()
-            if not ret:
-                print(f"rtsp : {self.rtsp} is broken at frame {frame_count}.......", flush=True)
-                while(retry < 10):
-                    print(f"rtsp : {self.rtsp} reopened {retry} times .......", flush=True)
-                    retry += 1
-                    if cap.isOpened():
-                        break
-                if not cap.isOpened():
-                    break
-                continue
-            # time.sleep(1)
-            frame_count += 1
-
+                
         ret, frame = cap.read()
+
         cap.release()
         cv2.destroyAllWindows()
         # 保存圖片

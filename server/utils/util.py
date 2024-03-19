@@ -13,7 +13,7 @@ def dir_init(pathDir):
 def date_to_timestamp(time_str):
     datetime_obj = datetime.strptime(time_str, "%Y-%m-%d %H:%M:%S.%f")
     timestamp = datetime_obj.timestamp()
-    timestamp_ms = timestamp * 1000000 + int(datetime_obj.microsecond)
+    timestamp_ms = timestamp * 1000000 
     # print(f"{timestamp_ms = }")
     return int(timestamp_ms)
 

@@ -99,10 +99,10 @@ if __name__ == '__main__':
             # core things we care end
             
             if is_moving:
-                cv2.rectangle(frame, tuple(roi_tl), tuple(roi_br), COLOR_RED, 2)
+                # cv2.rectangle(frame, tuple(roi_tl), tuple(roi_br), COLOR_RED, 2)
                 cv2.putText(frame, 'Failed! The shoulder was moving!', (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, COLOR_RED, 2)
             else:
-                cv2.rectangle(frame, tuple(roi_tl), tuple(roi_br), COLOR_GREEN, 2)
+                # cv2.rectangle(frame, tuple(roi_tl), tuple(roi_br), COLOR_GREEN, 2)
                 cv2.putText(frame, 'Pass! The shooter did it well!', (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, COLOR_GREEN, 2)
 
             # cv2.putText(frame, 'mo: {:02f}'.format(mo), (20, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, COLOR_GREEN, 2)
